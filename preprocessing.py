@@ -1,23 +1,21 @@
+import string
+# import pandas as pd
+from nltk import download
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.probability import FreqDist
-import nltk
-import string
-import pandas as pd
 from nltk.stem import WordNetLemmatizer
 
 def download_packages():
-  nltk.download('stopwords')
-  nltk.download('punkt')
-  nltk.download('wordnet')
+  download('stopwords')
+  download('punkt')
+  download('wordnet')
 
 # LEMMATIZATION
 def lemmatization(sentence):
   lemmatizer = WordNetLemmatizer()
-
   # Tokenize: Split the sentence into words
-  word_list = nltk.word_tokenize(sentence)
-
+  word_list = word_tokenize(sentence)
   # Lemmatize list of words and join
   lemmatized_output = ' '.join([lemmatizer.lemmatize(w) for w in word_list])
   return lemmatized_output
@@ -27,7 +25,6 @@ def add_lemmatization(all_sentences):
   for sentence in all_sentences:
     new_sentence = lemmatization(sentence)
     new_sentences.append(new_sentence)
-  
   return new_sentences
 
 # STOP WORDS
@@ -77,48 +74,53 @@ def remove_words_freq_1(all_sentences):
   
   return sentences_without_freq_1
 
-# REMOVE PUNCTUATION
-def remove_punctuation_from_text(all_sentences):
-  sentences_without_punctuation = []
+# GENERAL FUNCTIONS
+def separate_sentence_and_class(all_sentences):
+  sentences_list = []
+  classes_list = []
   for sentence in all_sentences:
-    temp_sentence = sentence.replace('.', ' ').replace('\n', '')
-    new_sentence = ''.join([i for i in temp_sentence if i not in string.punctuation]).lower()
-    sentences_without_punctuation.append(new_sentence)
+    sentences_list.append(sentence[:-1])
+    classes_list.append(sentence[-1])
   
-  return sentences_without_punctuation
+  return [sentences_list, classes_list]
 
-if __name__ == '__main__':
-  filename = 'reviews.txt'
-  file = open(filename, "r")
-
-  filters = ['remove_punctuation', 'stop_words', 'freq_1', 'lemmatization']
-  # Primera representación: filtro a y filtro c
-  # Segunda representación: filtro b y filtro a
-  all_sentences = []
-  for sentence in file:
-    all_sentences.append(sentence)
-
-  if('remove_punctuation' in filters):
-    all_sentences = remove_punctuation_from_text(all_sentences)
-  
-  sentence_list = []
-  class_list = []
-  for sentence in all_sentences:
-    sentence_list.append(sentence[:-1])
-    class_list.append(sentence[-1])
-
+def apply_filters_to_sentences(sentences_list, filters):
   if('stop_words' in filters):
-    sentence_list = remove_stop_words_from_text(sentence_list)
+    sentences_list = remove_stop_words_from_text(sentences_list)
   
   if('freq_1' in filters):
-    sentence_list = remove_words_freq_1(sentence_list)
+    sentences_list = remove_words_freq_1(sentences_list)
 
   if('lemmatization' in filters):
-    sentence_list = add_lemmatization(sentence_list)
+    sentences_list = add_lemmatization(sentences_list)
   
-  file = open("processed_test.txt", "w")
-  for index in range(len(sentence_list)):
-    file.write(sentence_list[index] + ' ' + class_list[index] + '\n')
+  return sentences_list
+
+# FILE MANIPULATION
+def get_sentences_without_punctuation(input_filename):
+  file = open(input_filename, "r")
+  all_sentences = []
+  for sentence in file:
+    sentence_without_new_line = sentence.replace('\n', '')
+    processed_sentence = ''.join([i for i in sentence_without_new_line if i not in string.punctuation]).lower()
+    all_sentences.append(processed_sentence)
+  
+  return all_sentences
+
+def write_to_file(output_filename, sentences_list, classes_list):
+  file = open(output_filename, "w")
+  for index in range(len(sentences_list)):
+    file.write(sentences_list[index] + ' ' + classes_list[index] + '\n')
   file.close()
 
-  
+# MAIN
+if __name__ == '__main__':
+  input_filename = 'reviews.txt'
+  output_filename = "processed_test.txt"
+  filters = ['stop_words', 'freq_1', 'lemmatization']
+
+  download_packages()
+  all_sentences = get_sentences_without_punctuation(input_filename=input_filename)
+  [sentences_list, classes_list] = separate_sentence_and_class(all_sentences=all_sentences)
+  sentences_list = apply_filters_to_sentences(sentences_list=sentences_list, filters=filters)
+  write_to_file(output_filename, sentences_list, classes_list)

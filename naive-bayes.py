@@ -100,16 +100,11 @@ def get_probabilities(words_freq):
   return words_prob
 
 if __name__ == '__main__':
-  sentences_freq = {
-    'pos': 0,
-    'neg': 0
-  }
-
+  sentences_freq = { 'pos': 0, 'neg': 0 }
   words_freq = {}
-  
   test_sample = random.sample(range(0, 2999), 300)
-
   test_sentences = []
+
   for index in range(3000):
     if index in test_sample:
       test_sentence = input()
@@ -118,17 +113,14 @@ if __name__ == '__main__':
       text = input()
       [sentences_freq, words_freq] = classify_sentence(sentences_freq=sentences_freq, words_freq=words_freq, text=text)
   
-  
   positive_prob = math.log10(sentences_freq['pos'] / 900)
   negative_prob = math.log10(sentences_freq['neg'] / 900)  
   words_prob = get_probabilities(words_freq)  
-  # generate_vocabulary_csv(sentences_freq, positive_prob, negative_prob, words_freq, words_prob)
-  [test_classes, real_classes] = evaluate_sentences(test_sentences, words_prob, positive_prob, negative_prob)
-  print('ClasesTest:', test_classes)
-  print('ClasesRecuperadas', real_classes)
 
+  [test_classes, real_classes] = evaluate_sentences(test_sentences, words_prob, positive_prob, negative_prob)
+  
+  # Confusion matrix
   Matriz = confusion_matrix(test_classes, real_classes)
-  # tn, fp, fn, tp = confusion_matrix(test_classes, real_classes).ravel()
   print('Confusion matrix:')
   print(Matriz)
 
