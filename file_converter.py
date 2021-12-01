@@ -62,12 +62,12 @@ def parse_txt_to_arff(txt_location, arff_location):
   file_to_read_pointer = open_file_read(txt_location)
   file_to_write_pointer = open_file_append(arff_location)
 
-  parse_header(file_to_write_pointer=file_to_write_pointer, relation_name="Amazon")
+  parse_header(file_to_write_pointer=file_to_write_pointer, relation_name="Reviews")
   parse_body(file_to_read_pointer=file_to_read_pointer, file_to_write_pointer=file_to_write_pointer)
 
   file_to_read_pointer.close()
   file_to_write_pointer.close()
 
 if __name__ == '__main__':
-  parse_txt_to_arff(txt_location="./amazon_cells_labelled.txt", arff_location="./amazon.arff")
+  parse_txt_to_arff(txt_location="./reviews.txt", arff_location="./reviews.arff")
 

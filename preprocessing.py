@@ -118,7 +118,6 @@ if __name__ == '__main__':
   input_filename = 'reviews.txt'
   output_filename = "processed_test.txt"
   filters = ['stop_words', 'freq_1', 'lemmatization']
-
   download_packages()
   all_sentences = get_sentences_without_punctuation(input_filename=input_filename)
   [sentences_list, classes_list] = separate_sentence_and_class(all_sentences=all_sentences)

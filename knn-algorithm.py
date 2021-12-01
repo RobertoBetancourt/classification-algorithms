@@ -3,7 +3,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix, precision_recall_fscore_support
 
 # Agregar los atributos en un vector
-Archivo = open('processed_data.csv', 'r')
+Archivo = open('string_to_word_vector.csv', 'r')
 Clases = []
 Valores = []
 for x in Archivo.readlines():
@@ -16,7 +16,7 @@ for x in Archivo.readlines():
 Datos_train, Datos_test, Clase_Train, Clase_Test = train_test_split(Valores, Clases, test_size=0.2)
 
 # Definir modelo (elegir clasificador)
-algoritmo = KNeighborsClassifier(n_neighbors=3, metric='euclidean')
+algoritmo = KNeighborsClassifier(n_neighbors=1, metric='euclidean')
 
 # Entrenamiento
 algoritmo.fit(Datos_train, Clase_Train)
